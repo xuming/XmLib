@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  s.license      = 'MIT (example)'
+  s.license      = 'MIT'
   # s.license      = { :type => 'MIT', :file => 'FILE_LICENSE' }
 
 
@@ -75,7 +75,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, svn and HTTP.
   #
 
-  s.source       = { :git => "/Users/xuming/Google 云端硬盘/Develop/gitpub/XmLib"}
+  s.source       = { :git => "https://github.com/xuming/XmLib.git"}
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -86,9 +86,9 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  #s.source_files  = '**/*.{h,m}'
-  s.source_files = '**/*.h'
-  s.preserve_paths = '**/*.a'
+  s.source_files  = '**/*.{h,m}'
+  #s.source_files = '**/*.h'
+  #s.preserve_paths = '**/*.a'
 
   #s.exclude_files = 'Classes/Exclude'
 
@@ -131,6 +131,6 @@ Pod::Spec.new do |s|
   # s.requires_arc = true
 
   # s.xcconfig = { 'HEADER_SEARCH_PATHS' => '$(SDKROOT)/usr/include/libxml2' }
-  # s.dependency 'JSONKit', '~> 1.4'
+   s.dependency 'Google-Mobile-Ads-SDK', '~> 6.6.1'
 
 end
