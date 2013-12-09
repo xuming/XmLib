@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "XmLib"
-  #s.version      = "0.0.1"
+  s.version      = "0.0.1"
   s.summary      = "A short description of XmLib."
 
   s.description  = <<-DESC
@@ -131,6 +131,6 @@ Pod::Spec.new do |s|
   # s.requires_arc = true
 
   # s.xcconfig = { 'HEADER_SEARCH_PATHS' => '$(SDKROOT)/usr/include/libxml2' }
-   s.dependency 'Google-Mobile-Ads-SDK', '~> 6.6.1'
+  s.dependency 'Google-Mobile-Ads-SDK', '~> 6.6.1'
 
 end
