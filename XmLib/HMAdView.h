@@ -24,7 +24,9 @@ typedef enum
 - 根据时区不同自动选择使用那个广告
 
 */
-@interface HMAdView : UIView<ADBannerViewDelegate>
+@interface HMAdView : UIView<ADBannerViewDelegate>{
+
+}
 
 ///iAd广告条
 @property (nonatomic,retain) ADBannerView * iAdView;
@@ -38,6 +40,10 @@ typedef enum
 @property(nonatomic,retain) NSString *  adMobAdUnitID;
 ///是否测试模式
 @property(nonatomic,assign) BOOL testing;
+
+@property(nonatomic,retain) NSMutableArray * testDevices;
+
 ///处理广告
 - (void)disposeAds: (BOOL)forkids;
+- (void)addTestDevice:(NSString *)deviceId;
 @end

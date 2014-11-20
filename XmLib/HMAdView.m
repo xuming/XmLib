@@ -25,6 +25,7 @@
         // Initialization code
         _adMobAdUnitID=@"a14f98c67f3d5ce";
         _testing=NO;
+        _testDevices = [NSMutableArray arrayWithObjects:GAD_SIMULATOR_ID, nil];
     }
     return self;
 }
@@ -155,16 +156,16 @@
                 }
                 // Make the request for a test ad. Put in an identifier for the simulator as
                 // well as any devices you want to receive test ads.
-                //request.testDevices =
-                //[NSArray arrayWithObjects:
-                // GAD_SIMULATOR_ID,
-                // @"1ae0eaaae8062f767c915571e26ed374",
+                if( self.testing == YES){
+                    request.testDevices = [NSArray arrayWithArray:_testDevices];
+                }
                  
                  // TODO: Add your device/simulator test identifiers here. They are
                  // printed to the console when the app is launched.
                 // nil];
                 
-                request.testing=_testing;
+
+                //request.testing=_testing;
                 self.iGAdView=bannerView_;
                 
                 
@@ -225,8 +226,11 @@
         }
     }
 }
+-(void)addTestDevice:(NSString *)deviceId{
 
-
+    [_testDevices addObject:deviceId];
+    
+}
 #pragma mark ADBannerView Delegate
 
 // 广告读取过程中出现错误
