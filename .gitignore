@@ -18,3 +18,7 @@ xcuserdata
 profile
 *.moved-aside
 DerivedData
+
+XmLib.xcodeproj/project.pbxproj
+
+XmLib.xcodeproj/project.xcworkspace/xcuserdata/xuming.xcuserdatad/UserInterfaceState.xcuserstate
