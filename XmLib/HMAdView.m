@@ -11,6 +11,15 @@
 #import "GADBannerView.h"
 #import "GADAdMobExtras.h"
 #import "HMUtil.h"
+
+@interface HMAdView() {
+    
+    
+    NSLayoutConstraint * heightConstraint;
+    NSLayoutConstraint * widthConstraint;
+}
+@end
+
 @implementation HMAdView
 @synthesize iAdView;
 @synthesize iGAdView;
@@ -18,6 +27,7 @@
 @synthesize adMobAdUnitID=_adMobAdUnitID;
 @synthesize adType=_adType;
 @synthesize testing=_testing;
+@synthesize delegate = _delegate;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -26,11 +36,19 @@
         _adMobAdUnitID=@"a14f98c67f3d5ce";
         _testing=NO;
         _testDevices = [NSMutableArray arrayWithObjects:GAD_SIMULATOR_ID, nil];
+        heightConstraint =  [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:frame.size.height];
+        
+        widthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:frame.size.width];
+        
+        [self addConstraint:heightConstraint];
+        //[self addConstraint:widthConstraint];
+
+       
     }
     return self;
 }
 
-- (void)disposeAds: (BOOL)forkids {
+- (void)showAds: (BOOL)forkids {
     
     BOOL is_iAdON = NO;
     BOOL is_adMobON = NO;
@@ -117,6 +135,8 @@
                 
                 
                 CGSize sizeToRequest;
+                //sizeToRequest = kGADAdSizeSmartBannerPortrait.size;
+                
                 if(DEVICE_IS_IPAD)
                     sizeToRequest =  kGADAdSizeLeaderboard.size;
                 else
@@ -128,6 +148,7 @@
                                                                        sizeToRequest.width,
                                                                        sizeToRequest.height)];
                 
+                bannerView_.delegate = self;
                 // 指定广告的“单元标识符”，也就是您的 AdMob 发布商 ID。
                 bannerView_.adUnitID =_adMobAdUnitID; //MY_BANNER_UNIT_ID;
                 
@@ -136,6 +157,15 @@
                 
                 bannerView_.rootViewController =_rootViewController;
                 [self addSubview:bannerView_];
+                
+//                [ self addConstraint:
+//                 [NSLayoutConstraint constraintWithItem:bannerView_ attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]
+//                 ];
+
+                [ self addConstraint:
+                    [NSLayoutConstraint constraintWithItem:bannerView_ attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]
+                ];
+                
                 
                 GADRequest *request = [GADRequest request];
                 if (forkids)
@@ -173,6 +203,7 @@
                 // 启动一般性请求并在其中加载广告。
                 [bannerView_ loadRequest:request];
                
+               
                 
                 
             }
@@ -180,19 +211,21 @@
         else {
             //启用iAd
             if(!iAdView) {
-                iAdView= [[ADBannerView alloc]   initWithFrame:CGRectZero];
-                 
-                //iAdView.requiredContentSizeIdentifiers= [NSSet setWithObject: ADBannerContentSizeIdentifierPortrait];
-                //iAdView.currentContentSizeIdentifier= ADBannerContentSizeIdentifierPortrait;
-          
-                /*CGSize sizeToRequest= [ADBannerView sizeFromBannerContentSizeIdentifier:ADBannerContentSizeIdentifierPortrait];
+                iAdView= [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
                 
-                iAdView.frame = CGRectMake(0, 0, sizeToRequest.width, sizeToRequest.height);
-                */
+                
+               
+
                 
                 iAdView.delegate = self;
                 [self addSubview:iAdView];
-                iAdView.hidden= YES; //暂时不显示广告框，收到广告后再显示出来
+                
+                [ self addConstraint:
+                 [NSLayoutConstraint constraintWithItem:iAdView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]
+                 ];
+                
+                
+                //iAdView.hidden= NO; //暂时不显示广告框，收到广告后再显示出来
             }
         }
     }
@@ -231,19 +264,74 @@
     [_testDevices addObject:deviceId];
     
 }
+
+#pragma mark GADBannerViewDelegate Delegate
+-(void)adViewDidReceiveAd:(GADBannerView *)view{
+    heightConstraint.constant = view.frame.size.height;
+    //widthConstraint.constant = view.frame.size.width;
+    [self layoutIfNeeded];
+    if (self.delegate != nil ){
+        
+        if ( [self.delegate respondsToSelector:@selector(HMAdViewDidReceiveAd:)])
+        {
+            
+            [self.delegate HMAdViewDidReceiveAd:view];
+            
+        }
+    }
+    
+    view.hidden=NO;
+}
+-(void)adView:(GADBannerView *)view didFailToReceiveAdWithError:(GADRequestError *)error{
+
+    if (self.delegate != nil ){
+        
+        if ( [self.delegate respondsToSelector:@selector(HMAdViewDidFailToReceiveAd:WithError:)])
+        {
+            
+            [self.delegate HMAdViewDidFailToReceiveAd:view WithError:error];
+            
+        }
+    }
+
+
+}
+
 #pragma mark ADBannerView Delegate
 
 // 广告读取过程中出现错误
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError * )error{
     // 切换ADBannerView表示状态，显示→隐藏
     // adView.frame = CGRectOffset(adView.frame, 0, self.view.frame.size.height);
+    if (self.delegate != nil ){
+        
+      if ( [self.delegate respondsToSelector:@selector(HMAdViewDidFailToReceiveAd:WithError:)])
+      {
+          
+         [self.delegate HMAdViewDidFailToReceiveAd:banner WithError:error];
+      
+      }
+    }
 }
 
 // 成功读取广告
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner{
     // 切换ADBannerView表示状态，隐藏→显示
-    // adView.frame = CGRectOffset(adView.frame, 0, self.view.frame.size.height - adView.frame.size.height);
-    banner.hidden=NO;
+    heightConstraint.constant = banner.frame.size.height;
+    //widthConstraint.constant = banner.frame.size.width;
+    [self layoutIfNeeded];
+    if (self.delegate != nil ){
+        
+        if ( [self.delegate respondsToSelector:@selector(HMAdViewDidReceiveAd:)])
+        {
+            
+            [self.delegate HMAdViewDidReceiveAd:banner];
+        }
+    }
+    
+  
+
+    //banner.hidden=NO;
 }
 
 // 用户点击广告是响应，返回值BOOL指定广告是否打开
