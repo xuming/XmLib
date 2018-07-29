@@ -8,8 +8,8 @@
 
 #import "HMAdView.h"
 #import <iad/ADBannerView.h>
-#import "GADBannerView.h"
-#import "GADAdMobExtras.h"
+#import "GoogleMobileAds/GADBannerView.h"
+#import "GoogleMobileAds/GADExtras.h"
 #import "HMUtil.h"
 
 @interface HMAdView() {
@@ -35,7 +35,8 @@
         // Initialization code
         _adMobAdUnitID=@"a14f98c67f3d5ce";
         _testing=NO;
-        _testDevices = [NSMutableArray arrayWithObjects:GAD_SIMULATOR_ID, nil];
+
+       _testDevices = [NSMutableArray arrayWithObjects:kGADSimulatorID, nil];
         heightConstraint =  [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:frame.size.height];
         
         widthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:frame.size.width];
@@ -174,7 +175,7 @@
            
                                                
                     
-                    GADAdMobExtras *extras = [[GADAdMobExtras alloc] init];
+                    GADExtras *extras = [[GADExtras alloc] init];
                     extras.additionalParameters =
                     [NSMutableDictionary dictionaryWithObjectsAndKeys:
                      @"1", @"tag_for_child_directed_treatment",

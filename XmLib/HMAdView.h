@@ -5,10 +5,10 @@
 //  Created by  on 12-4-26.
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
-
+@import GoogleMobileAds;
 #import <UIKit/UIKit.h>
 #import <iAd/ADBannerView.h>
-#import "GADBannerView.h"
+#import <GoogleMobileAds/GADBannerView.h>
 
 typedef enum
 {
